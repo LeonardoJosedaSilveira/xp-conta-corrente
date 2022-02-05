@@ -28,9 +28,9 @@ export class BankTransitionController {
     return this.bankTransitionService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.bankTransitionService.findOne(+id);
+  @Get('extract/:id')
+  async extract(@Param('id') id: string) {
+    return await this.bankTransitionService.extract(+id);
   }
 
   @Patch(':id')
