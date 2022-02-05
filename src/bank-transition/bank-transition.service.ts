@@ -81,6 +81,19 @@ export class BankTransitionService {
     return result;
   }
 
+  async balance(id) {
+
+    const accountSelect = await this.prisma.account.findUnique({ where: { id } })
+    
+    if(!accountSelect) throw new BadRequestException("Account not exist");  
+    
+    const result = await this.prisma.account.findUnique({
+      where: { id },
+      select: { balance: true },
+    })
+    return result;
+  }
+
   update(id: number, updateBankTransitionDto: UpdateBankTransitionDto) {
     return `This action updates a #${id} bankTransition`;
   }

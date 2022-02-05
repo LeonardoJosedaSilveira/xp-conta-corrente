@@ -33,6 +33,11 @@ export class BankTransitionController {
     return await this.bankTransitionService.extract(+id);
   }
 
+  @Get('balance/:id')
+  async balance(@Param('id') id: string) {
+    return await this.bankTransitionService.balance(+id);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateBankTransitionDto: UpdateBankTransitionDto) {
     return this.bankTransitionService.update(+id, updateBankTransitionDto);
