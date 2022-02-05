@@ -8,7 +8,7 @@ export class BankTransitionService {
   constructor(private readonly prisma: PrismaService) {}
 
   
-  async create(createBankTransitionDto: CreateBankTransitionDto, id) {
+  async credit(createBankTransitionDto: CreateBankTransitionDto, id) {
     const { origin, value } = createBankTransitionDto;
 
     if(value < 0) throw new BadRequestException("Invalid value");
@@ -28,6 +28,30 @@ export class BankTransitionService {
     })
 
     return { message: `The amount of ${value} has been added to account ${id}`};
+  }
+
+  async debit(createBankTransitionDto: CreateBankTransitionDto, id) {
+    const { origin, value } = createBankTransitionDto;
+
+    if(value < 0) throw new BadRequestException("Invalid value");
+
+    const accountSelect = await this.prisma.account.findUnique({ where: { id } })
+    
+    if(!accountSelect) throw new BadRequestException("Account not exist");
+
+    if(accountSelect.balance < value) throw new BadRequestException("insufficient funds");
+    
+
+    const result = await this.prisma.bankTransition.create({
+      data: { type: 'DEBIT', origin, value, accountId: id, }
+    })
+
+    await this.prisma.account.update({
+      where: { id },
+      data: { balance: { decrement: value } },
+    })
+
+    return { message: `The amount of ${value} 1234 was debited from account ${id}`};
   }
 
   findAll() {

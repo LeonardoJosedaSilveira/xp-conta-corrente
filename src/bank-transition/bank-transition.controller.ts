@@ -8,19 +8,19 @@ export class BankTransitionController {
   constructor(private readonly bankTransitionService: BankTransitionService) {}
 
   @Post('credit/:id')
-  async create(
+  async credit(
     @Body() createBankTransitionDto: CreateBankTransitionDto,
     @Param('id') id: string,
     ) {
-    return await this.bankTransitionService.create(createBankTransitionDto, +id);
+    return await this.bankTransitionService.credit(createBankTransitionDto, +id);
   }
 
-  @Post('credit/:id')
+  @Post('debit/:id')
   async debit(
     @Body() createBankTransitionDto: CreateBankTransitionDto,
     @Param('id') id: string,
     ) {
-    return await this.bankTransitionService.create(createBankTransitionDto, +id);
+    return await this.bankTransitionService.debit(createBankTransitionDto, +id);
   }
 
   @Get()
