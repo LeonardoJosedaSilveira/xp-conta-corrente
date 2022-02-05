@@ -1,7 +1,7 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { PrismaService } from '../database/prisma.service';
 import { CreateBankTransitionDto } from './dto/create-bank-transition.dto';
 import { UpdateBankTransitionDto } from './dto/update-bank-transition.dto';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { PrismaService } from '../database/prisma.service';
 
 @Injectable()
 export class BankTransitionService {
