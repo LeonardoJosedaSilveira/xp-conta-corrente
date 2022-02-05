@@ -1,22 +1,18 @@
 import { CreateBankTransitionDto } from './dto/create-bank-transition.dto';
-import { UpdateBankTransitionDto } from './dto/update-bank-transition.dto';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import validateTransitons from '../shared/utils/validateTransitions';
 import { PrismaService } from '../database/prisma.service';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class BankTransitionService {
   constructor(private readonly prisma: PrismaService) {}
-
   
   async credit(createBankTransitionDto: CreateBankTransitionDto, id) {
     const { origin, value } = createBankTransitionDto;
 
-    if(value < 0) throw new BadRequestException("Invalid value");
-
     const accountSelect = await this.prisma.account.findUnique({ where: { id } })
-    
-    if(!accountSelect) throw new BadRequestException("Account not exist");
-    
+
+    validateTransitons.credit(value, accountSelect);
 
     const result = await this.prisma.bankTransition.create({
       data: { type: 'CREDIT', origin, value, accountId: id, }
@@ -33,16 +29,11 @@ export class BankTransitionService {
   async debit(createBankTransitionDto: CreateBankTransitionDto, id) {
     const { origin, value } = createBankTransitionDto;
 
-    if(value < 0) throw new BadRequestException("Invalid value");
-
     const accountSelect = await this.prisma.account.findUnique({ where: { id } })
-    
-    if(!accountSelect) throw new BadRequestException("Account not exist");
+ 
+    validateTransitons.debit(value, accountSelect);
 
-    if(accountSelect.balance < value) throw new BadRequestException("insufficient funds");
-    
-
-    const result = await this.prisma.bankTransition.create({
+    await this.prisma.bankTransition.create({
       data: { type: 'DEBIT', origin, value, accountId: id, }
     })
 
@@ -54,15 +45,11 @@ export class BankTransitionService {
     return { message: `The amount of ${value} 1234 was debited from account ${id}`};
   }
 
-  findAll() {
-    return `This action returns all bankTransition`;
-  }
-
   async extract(id) {
 
     const accountSelect = await this.prisma.account.findUnique({ where: { id } })
     
-    if(!accountSelect) throw new BadRequestException("Account not exist");  
+    validateTransitons.exist(accountSelect);
     
     const result = await this.prisma.account.findUnique({
       where: { id },
@@ -85,20 +72,12 @@ export class BankTransitionService {
 
     const accountSelect = await this.prisma.account.findUnique({ where: { id } })
     
-    if(!accountSelect) throw new BadRequestException("Account not exist");  
-    
+    validateTransitons.exist(accountSelect);
+ 
     const result = await this.prisma.account.findUnique({
       where: { id },
       select: { balance: true },
     })
     return result;
-  }
-
-  update(id: number, updateBankTransitionDto: UpdateBankTransitionDto) {
-    return `This action updates a #${id} bankTransition`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} bankTransition`;
   }
 }
