@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BankTransitionController } from './bank-transition.controller';
-import { BankTransitionService } from './bank-transition.service';
+import { BankTransitionController } from '../../src/bank-transition/bank-transition.controller';
+import { BankTransitionService } from '../../src/bank-transition/bank-transition.service';
 
 describe('BankTransitionController', () => {
   let controller: BankTransitionController;

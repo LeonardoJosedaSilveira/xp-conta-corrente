@@ -1,26 +1,83 @@
-import { Injectable } from '@nestjs/common';
 import { CreateBankTransitionDto } from './dto/create-bank-transition.dto';
-import { UpdateBankTransitionDto } from './dto/update-bank-transition.dto';
+import validateTransitons from '../shared/utils/validateTransitions';
+import { PrismaService } from '../database/prisma.service';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class BankTransitionService {
-  create(createBankTransitionDto: CreateBankTransitionDto) {
-    return 'This action adds a new bankTransition';
+  constructor(private readonly prisma: PrismaService) {}
+  
+  async credit(createBankTransitionDto: CreateBankTransitionDto, id) {
+    const { origin, value } = createBankTransitionDto;
+
+    const accountSelect = await this.prisma.account.findUnique({ where: { id } })
+
+    validateTransitons.credit(value, accountSelect);
+
+    const result = await this.prisma.bankTransition.create({
+      data: { type: 'CREDIT', origin, value, accountId: id, }
+    })
+
+    await this.prisma.account.update({
+      where: { id },
+      data: { balance: { increment: value } },
+    })
+
+    return { message: `The amount of ${value} has been added to account ${id}`};
   }
 
-  findAll() {
-    return `This action returns all bankTransition`;
+  async debit(createBankTransitionDto: CreateBankTransitionDto, id) {
+    const { origin, value } = createBankTransitionDto;
+
+    const accountSelect = await this.prisma.account.findUnique({ where: { id } })
+ 
+    validateTransitons.debit(value, accountSelect);
+
+    await this.prisma.bankTransition.create({
+      data: { type: 'DEBIT', origin, value, accountId: id, }
+    })
+
+    await this.prisma.account.update({
+      where: { id },
+      data: { balance: { decrement: value } },
+    })
+
+    return { message: `The amount of ${value} was debited from account ${id}`};
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} bankTransition`;
+  async extract(id) {
+
+    const accountSelect = await this.prisma.account.findUnique({ where: { id } })
+    
+    validateTransitons.exist(accountSelect);
+    
+    const result = await this.prisma.account.findUnique({
+      where: { id },
+      select: {
+        bankTransition:{
+          select: {
+            origin: true,
+            type: true,
+            value: true,
+            date: true,
+          },
+          orderBy: { date: 'desc' },
+        },
+      },
+    })
+    return result;
   }
 
-  update(id: number, updateBankTransitionDto: UpdateBankTransitionDto) {
-    return `This action updates a #${id} bankTransition`;
-  }
+  async balance(id) {
 
-  remove(id: number) {
-    return `This action removes a #${id} bankTransition`;
+    const accountSelect = await this.prisma.account.findUnique({ where: { id } })
+    
+    validateTransitons.exist(accountSelect);
+ 
+    const result = await this.prisma.account.findUnique({
+      where: { id },
+      select: { balance: true },
+    })
+    return result;
   }
 }

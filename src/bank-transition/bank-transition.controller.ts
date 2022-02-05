@@ -1,34 +1,34 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { BankTransitionService } from './bank-transition.service';
 import { CreateBankTransitionDto } from './dto/create-bank-transition.dto';
-import { UpdateBankTransitionDto } from './dto/update-bank-transition.dto';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { BankTransitionService } from './bank-transition.service';
 
 @Controller('bank-transition')
 export class BankTransitionController {
   constructor(private readonly bankTransitionService: BankTransitionService) {}
 
-  @Post()
-  create(@Body() createBankTransitionDto: CreateBankTransitionDto) {
-    return this.bankTransitionService.create(createBankTransitionDto);
+  @Post('credit/:id')
+  async credit(
+    @Body() createBankTransitionDto: CreateBankTransitionDto,
+    @Param('id') id: string,
+    ) {
+    return await this.bankTransitionService.credit(createBankTransitionDto, +id);
   }
 
-  @Get()
-  findAll() {
-    return this.bankTransitionService.findAll();
+  @Post('debit/:id')
+  async debit(
+    @Body() createBankTransitionDto: CreateBankTransitionDto,
+    @Param('id') id: string,
+    ) {
+    return await this.bankTransitionService.debit(createBankTransitionDto, +id);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.bankTransitionService.findOne(+id);
+  @Get('extract/:id')
+  async extract(@Param('id') id: string) {
+    return await this.bankTransitionService.extract(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBankTransitionDto: UpdateBankTransitionDto) {
-    return this.bankTransitionService.update(+id, updateBankTransitionDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.bankTransitionService.remove(+id);
+  @Get('balance/:id')
+  async balance(@Param('id') id: string) {
+    return await this.bankTransitionService.balance(+id);
   }
 }
