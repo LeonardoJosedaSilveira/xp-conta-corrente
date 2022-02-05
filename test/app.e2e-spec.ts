@@ -158,3 +158,76 @@ describe('POST /bank-transition/debit/2', () => {
   });
 });
 
+describe('GET /bank-transition/extract/2', () => {
+  let app: INestApplication;
+
+  beforeEach(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
+
+    app = moduleFixture.createNestApplication();
+    await app.init();
+  });
+
+  it('exibir o extrato da conta  (GET)', () => {
+    return request(app.getHttpServer())
+      .get('/bank-transition/extract/2')
+      .send()
+      .expect(200)
+      .expect('Content-Type', /json/);
+
+
+  });
+
+  it('usuario invalido  (GET)', () => {
+    return request(app.getHttpServer())
+      .get('/bank-transition/extract/9992035198165481')
+      .send()
+      .expect(400, {
+        "statusCode": 400,
+        "message": "Account not exist",
+        "error": "Bad Request"
+      })
+      .expect('Content-Type', /json/);
+
+  });
+
+});
+
+describe('GET /bank-transition/balance/2', () => {
+  let app: INestApplication;
+
+  beforeEach(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
+
+    app = moduleFixture.createNestApplication();
+    await app.init();
+  });
+
+  it('exibir o valor atual na conta  (GET)', () => {
+    return request(app.getHttpServer())
+      .get('/bank-transition/balance/2')
+      .send()
+      .expect(200)
+      .expect('Content-Type', /json/);
+
+
+  });
+
+  it('usuario invalido  (GET)', () => {
+    return request(app.getHttpServer())
+      .get('/bank-transition/balance/9992035198165481')
+      .send()
+      .expect(400, {
+        "statusCode": 400,
+        "message": "Account not exist",
+        "error": "Bad Request"
+      })
+      .expect('Content-Type', /json/);
+
+  });
+
+});
