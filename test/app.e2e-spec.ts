@@ -46,7 +46,6 @@ describe('POST /bank-transition/credit/2', () => {
         "message": "The amount of 100 has been added to account 2"
       })
       .expect('Content-Type', /json/);
-
   });
 
   it('usuario invalido  (POST)', () => {
@@ -62,7 +61,6 @@ describe('POST /bank-transition/credit/2', () => {
         "error": "Bad Request"
       })
       .expect('Content-Type', /json/);
-
   });
 
   it('valor invalido  (POST)', () => {
@@ -78,7 +76,6 @@ describe('POST /bank-transition/credit/2', () => {
         "error": "Bad Request"
       })
       .expect('Content-Type', /json/);
-
   });
 });
 
@@ -106,7 +103,6 @@ describe('POST /bank-transition/debit/2', () => {
         "message": "The amount of 5 was debited from account 2"
       })
       .expect('Content-Type', /json/);
-
   });
 
   it('usuario invalido  (POST)', () => {
@@ -122,7 +118,6 @@ describe('POST /bank-transition/debit/2', () => {
         "error": "Bad Request"
       })
       .expect('Content-Type', /json/);
-
   });
 
   it('valor invalido  (POST)', () => {
@@ -138,7 +133,6 @@ describe('POST /bank-transition/debit/2', () => {
         "error": "Bad Request"
       })
       .expect('Content-Type', /json/);
-
   });
 
   it('valor indisponivel na conta  (POST)', () => {
@@ -154,7 +148,6 @@ describe('POST /bank-transition/debit/2', () => {
         "error": "Bad Request"
       })
       .expect('Content-Type', /json/);
-
   });
 });
 
@@ -176,8 +169,6 @@ describe('GET /bank-transition/extract/2', () => {
       .send()
       .expect(200)
       .expect('Content-Type', /json/);
-
-
   });
 
   it('usuario invalido  (GET)', () => {
@@ -190,9 +181,7 @@ describe('GET /bank-transition/extract/2', () => {
         "error": "Bad Request"
       })
       .expect('Content-Type', /json/);
-
   });
-
 });
 
 describe('GET /bank-transition/balance/2', () => {
@@ -213,8 +202,6 @@ describe('GET /bank-transition/balance/2', () => {
       .send()
       .expect(200)
       .expect('Content-Type', /json/);
-
-
   });
 
   it('usuario invalido  (GET)', () => {
@@ -227,7 +214,5 @@ describe('GET /bank-transition/balance/2', () => {
         "error": "Bad Request"
       })
       .expect('Content-Type', /json/);
-
   });
-
 });

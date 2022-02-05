@@ -63,8 +63,10 @@ $ npm run start:prod
 ## Test
 
 ```bash
+Observação antes de rodar os testes crie 3 contas
+
 # unit tests
-$ npm run test
+$ npm run test:e2e
 
 ```
 
