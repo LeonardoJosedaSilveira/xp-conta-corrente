@@ -42,7 +42,7 @@ export class BankTransitionService {
       data: { balance: { decrement: value } },
     })
 
-    return { message: `The amount of ${value} 1234 was debited from account ${id}`};
+    return { message: `The amount of ${value} was debited from account ${id}`};
   }
 
   async extract(id) {
