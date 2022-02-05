@@ -1,15 +1,26 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { BankTransitionService } from './bank-transition.service';
 import { CreateBankTransitionDto } from './dto/create-bank-transition.dto';
 import { UpdateBankTransitionDto } from './dto/update-bank-transition.dto';
+import { BankTransitionService } from './bank-transition.service';
 
 @Controller('bank-transition')
 export class BankTransitionController {
   constructor(private readonly bankTransitionService: BankTransitionService) {}
 
-  @Post()
-  create(@Body() createBankTransitionDto: CreateBankTransitionDto) {
-    return this.bankTransitionService.create(createBankTransitionDto);
+  @Post('credit/:id')
+  async create(
+    @Body() createBankTransitionDto: CreateBankTransitionDto,
+    @Param('id') id: string,
+    ) {
+    return await this.bankTransitionService.create(createBankTransitionDto, +id);
+  }
+
+  @Post('credit/:id')
+  async debit(
+    @Body() createBankTransitionDto: CreateBankTransitionDto,
+    @Param('id') id: string,
+    ) {
+    return await this.bankTransitionService.create(createBankTransitionDto, +id);
   }
 
   @Get()
