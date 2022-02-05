@@ -140,5 +140,21 @@ describe('POST /bank-transition/debit/2', () => {
       .expect('Content-Type', /json/);
 
   });
+
+  it('valor indisponivel na conta  (POST)', () => {
+    return request(app.getHttpServer())
+      .post('/bank-transition/debit/2')
+      .send({
+        "value":  99999999999999999999,
+        "origin": "banco-agencia-conta-titular"
+      })
+      .expect(400, {
+        "statusCode": 400,
+        "message": "insufficient funds",
+        "error": "Bad Request"
+      })
+      .expect('Content-Type', /json/);
+
+  });
 });
 
