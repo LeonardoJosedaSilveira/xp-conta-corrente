@@ -58,8 +58,40 @@ export class BankTransitionService {
     return `This action returns all bankTransition`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} bankTransition`;
+  async extract(id) {
+
+    const accountSelect = await this.prisma.account.findUnique({ where: { id } })
+    
+    if(!accountSelect) throw new BadRequestException("Account not exist");  
+    
+    const result = await this.prisma.account.findUnique({
+      where: { id },
+      select: {
+        bankTransition:{
+          select: {
+            origin: true,
+            type: true,
+            value: true,
+            date: true,
+          },
+          orderBy: { date: 'desc' },
+        },
+      },
+    })
+    return result;
+  }
+
+  async balance(id) {
+
+    const accountSelect = await this.prisma.account.findUnique({ where: { id } })
+    
+    if(!accountSelect) throw new BadRequestException("Account not exist");  
+    
+    const result = await this.prisma.account.findUnique({
+      where: { id },
+      select: { balance: true },
+    })
+    return result;
   }
 
   update(id: number, updateBankTransitionDto: UpdateBankTransitionDto) {
